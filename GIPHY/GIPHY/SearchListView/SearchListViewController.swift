@@ -176,11 +176,22 @@ extension SearchListViewController {
     enum Action: Equatable {
         case searchBarChanged(String)
         case searchButtonTapped
+        case listItemTapped(Int)
         case replaceItems(UIImage?)
     }
     
     private enum Section: Hashable {
         case main
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension SearchListViewController: UICollectionViewDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        actionDispatcher.send(.listItemTapped(indexPath.item))
     }
 }
 

@@ -57,6 +57,7 @@ final class DetailViewController: UIViewController {
     }
     
     private func build() {
+        view.backgroundColor = .white
         let vStack = UIStackView()
         vStack.translatesAutoresizingMaskIntoConstraints = false
         vStack.axis = .vertical

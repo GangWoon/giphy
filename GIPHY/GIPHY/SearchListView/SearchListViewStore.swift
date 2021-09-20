@@ -19,7 +19,23 @@ final class SearchListViewStore {
     
     // MARK: - Environment
     struct Environment {
+        
+        struct Navigator {
+            
+            private let viewController: UIViewController
+            
+            init(viewController: UIViewController) {
+                self.viewController = viewController
+            }
+            
+            func presentDetailView(with image: UIImage?) {
+                let detailViewControler = DetailViewController()
+                viewController.show(detailViewControler, sender: viewController)
+            }
+        }
+        
         let scheduler: DispatchQueue
+        let navigator: Navigator
         let search: (String) -> AnyPublisher<UIImage?, Never>
     }
     
@@ -46,6 +62,10 @@ final class SearchListViewStore {
                 return environment.search(state.query)
                     .map { SearchListViewController.Action.replaceItems($0) }
                     .eraseToAnyPublisher()
+                
+            case let .listItemTapped(index):
+                environment.navigator
+                    .presentDetailView(with: state.items[index])
                 
             case let .replaceItems(items):
                 state.items.append(items)

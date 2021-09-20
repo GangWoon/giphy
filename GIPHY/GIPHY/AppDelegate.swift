@@ -30,8 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             urlSession: .shared,
             decoder: JSONDecoder()
         )
+        let navigator = SearchListViewStore.Environment.Navigator(viewController: searchListViewController)
         let environment = SearchListViewStore.Environment(
             scheduler: .main,
+            navigator: navigator,
             search: networkManager.fetchItems
         )
         let store = SearchListViewStore(
