@@ -61,8 +61,9 @@ final class DetailViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func update(with image: UIImage?) {
-        imageView.image = image
+    func update(with state: ViewState) {
+        imageView.image = state.image
+        favoritesButton.isSelected = state.isFavorites
     }
     
     private func build() {
@@ -105,5 +106,11 @@ extension DetailViewController {
     enum Action: Equatable {
         case viewDidLoad
         case favoritesButtonTapped
+    }
+    
+    struct ViewState: Equatable {
+        static var empty = Self(image: nil, isFavorites: false)
+        var image: UIImage?
+        var isFavorites: Bool
     }
 }
