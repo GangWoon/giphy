@@ -14,13 +14,13 @@ final class SearchListViewStore {
     struct State: Equatable {
         static var empty = Self(query: "", items: [])
         var query: String
-        var items: [URL]
+        var items: [UIImage?]
     }
     
     // MARK: - Environment
     struct Environment {
         let scheduler: DispatchQueue
-        let search: (String) -> AnyPublisher<[URL], Never>
+        let search: (String) -> AnyPublisher<UIImage?, Never>
     }
     
     // MARK: - Reducer
@@ -42,12 +42,13 @@ final class SearchListViewStore {
                 state.query = query
                 
             case .searchButtonTapped:
+                state.items = []
                 return environment.search(state.query)
                     .map { SearchListViewController.Action.replaceItems($0) }
                     .eraseToAnyPublisher()
                 
             case let .replaceItems(items):
-                state.items = items
+                state.items.append(items)
             }
             
             return nil
@@ -58,7 +59,7 @@ final class SearchListViewStore {
     private var reducer: Reducer {
         Reducer(environment: environment)
     }
-    let updateViewSubject: PassthroughSubject<[URL], Never>
+    let updateViewSubject: PassthroughSubject<[UIImage?], Never>
     @Published private var state: State
     private let environment: Environment
     private var cancellables: Set<AnyCancellable>
@@ -81,16 +82,22 @@ final class SearchListViewStore {
             .debounce(for: 0.3, scheduler: environment.scheduler)
             .sink { action in
                 self.reducer.reduce(action, state: &self.state)
-                    .map(self.fireEffect)
+                    .map(self.fireEffectAndForget)
             }
             .store(in: &cancellables)
     }
     
-    private func fireEffect(_ effect: AnyPublisher<SearchListViewController.Action, Never>) {
-        effect
-            .sink { action in
+    private func fireEffectAndForget(_ effect: AnyPublisher<SearchListViewController.Action, Never>) {
+        var cancellable: AnyCancellable?
+        cancellable = effect
+            .sink(receiveCompletion: { result in
+                guard case .finished = result,
+                      let cancellable = cancellable else { return }
+                self.cancellables.remove(cancellable)
+            }, receiveValue: { action in
                 self.reducer.reduce(action, state: &self.state)
-            }
+            })
+        cancellable?
             .store(in: &cancellables)
     }
     

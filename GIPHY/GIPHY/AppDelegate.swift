@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
         let environment = SearchListViewStore.Environment(
             scheduler: .main,
-            search: networkManager.fectItems
+            search: networkManager.fetchItems
         )
         let store = SearchListViewStore(
             state: .empty,

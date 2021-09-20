@@ -24,9 +24,9 @@ struct NetworkManager {
     }
     
     // MARK: - Methods
-    func fectItems(query: String) -> AnyPublisher<[URL], Never> {
+    func fetchItems(query: String) -> AnyPublisher<UIImage?, Never> {
         guard let url = makeURL(query) else {
-            return Just([])
+            return Just(nil)
                 .eraseToAnyPublisher()
         }
         
@@ -34,7 +34,22 @@ struct NetworkManager {
             .map(\.data)
             .decode(type: GIPHYData.self, decoder: decoder)
             .map(\.urls)
-            .replaceError(with: [])
+            .flatMap { items in
+                items.publisher
+                    .flatMap { item -> AnyPublisher<UIImage?, Never> in
+                        let subject = PassthroughSubject<UIImage?, Never>()
+                        DispatchQueue.global().async { [weak subject] in
+                            guard let data = try? Data(contentsOf: item) else { return }
+                            let image = UIImage(data: data)
+                            subject?.send(image)
+                            subject?.send(completion: .finished)
+                        }
+                        
+                        return subject
+                            .eraseToAnyPublisher()
+                    }
+            }
+            .replaceError(with: nil)
             .eraseToAnyPublisher()
     }
     

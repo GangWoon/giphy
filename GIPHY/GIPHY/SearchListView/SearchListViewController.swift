@@ -14,7 +14,7 @@ final class SearchListViewController: UIViewController {
     let actionDispatcher: PassthroughSubject<Action, Never>
     private let theme: Theme
     private let listViewLineSpacing: CGFloat = 8
-    private var dataSource: UICollectionViewDiffableDataSource<Section, URL>?
+    private var dataSource: UICollectionViewDiffableDataSource<Section, UIImage?>?
     private var cancellable: AnyCancellable?
     
     // MARK: - Lifecycle
@@ -34,15 +34,15 @@ final class SearchListViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func listenViewState(subject updateViewListener: PassthroughSubject<[URL], Never>) {
+    func listenViewState(subject updateViewListener: PassthroughSubject<[UIImage?], Never>) {
         cancellable = updateViewListener
             .sink { [weak self] in
                 self?.update(with: $0)
             }
     }
     
-    private func update(with state: [URL]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, URL>()
+    private func update(with state: [UIImage?]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, UIImage?>()
         snapshot.appendSections([.main])
         snapshot.appendItems(state)
         dataSource?.apply(snapshot)
@@ -132,14 +132,12 @@ final class SearchListViewController: UIViewController {
         listView.alwaysBounceVertical = true
         dataSource = .init(
             collectionView: listView,
-            cellProvider: { [weak self] listView, indexPath, url in
+            cellProvider: { listView, indexPath, image in
                 let cell = listView.dequeueReusableCell(
                     withReuseIdentifier: SearchListRow.identifier,
                     for: indexPath
                 ) as? SearchListRow
-                self?.parseURL(url) { image in
-                    cell?.update(with: image)
-                }
+                cell?.update(with: image)
                 
                 return cell
             }
@@ -148,15 +146,6 @@ final class SearchListViewController: UIViewController {
         listView.delegate = self
         
         return listView
-    }
-    
-    private func parseURL(_ item: URL, completion: @escaping (UIImage?) -> Void) {
-        DispatchQueue.global().async {
-            guard let data = try? Data(contentsOf: item) else { return }
-            DispatchQueue.main.async {
-                completion(UIImage(data: data))
-            }
-        }
     }
     
     @objc private func searchButtonTapped() {
@@ -187,7 +176,7 @@ extension SearchListViewController {
     enum Action: Equatable {
         case searchBarChanged(String)
         case searchButtonTapped
-        case replaceItems([URL])
+        case replaceItems(UIImage?)
     }
     
     private enum Section: Hashable {
