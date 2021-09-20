@@ -161,7 +161,7 @@ final class SearchListViewController: UIViewController {
 extension SearchListViewController {
     
     struct Theme {
-        static let `standard` = Self(
+        static let standard = Self(
             navigationTitle: "Search",
             searchBarPlaceholder: "Search GIPHY",
             searchButtonImage: UIImage(systemName: "magnifyingglass"),
