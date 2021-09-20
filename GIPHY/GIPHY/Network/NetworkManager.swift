@@ -35,18 +35,12 @@ struct NetworkManager {
             .decode(type: GIPHYData.self, decoder: decoder)
             .map(\.urls)
             .flatMap { items in
-                items.publisher
-                    .flatMap { item -> AnyPublisher<UIImage?, Never> in
-                        let subject = PassthroughSubject<UIImage?, Never>()
-                        DispatchQueue.global().async { [weak subject] in
-                            guard let data = try? Data(contentsOf: item) else { return }
-                            let image = UIImage(data: data)
-                            subject?.send(image)
-                            subject?.send(completion: .finished)
-                        }
-                        
-                        return subject
-                            .eraseToAnyPublisher()
+                return items.publisher
+                    .flatMap { url in
+                        return urlSession.dataTaskPublisher(for: url)
+                            .map(\.data)
+                            .map(UIImage.init(data:))
+                            .replaceError(with: nil)
                     }
             }
             .replaceError(with: nil)
