@@ -16,7 +16,7 @@ class SearchViewStoreTest: XCTestCase {
     func testSearchBarChanged_noEffect() {
         let environment = SearchListViewStore.Environment(
             scheduler: .main,
-            search: { _ in return Just([]).eraseToAnyPublisher() }
+            search: { _ in return Just(nil).eraseToAnyPublisher() }
         )
         let reducer = SearchListViewStore.Reducer(environment: environment)
         var state = SearchListViewStore.State.empty
@@ -28,24 +28,26 @@ class SearchViewStoreTest: XCTestCase {
     func testReplaceItems_noEffect() {
         let environment = SearchListViewStore.Environment(
             scheduler: .main,
-            search: { _ in return Just([]).eraseToAnyPublisher() }
+            search: { _ in return Just(nil).eraseToAnyPublisher() }
         )
         let reducer = SearchListViewStore.Reducer(environment: environment)
         var state = SearchListViewStore.State.empty
-        let items: [URL] = [.dummy, .dummy, .dummy]
-        reducer.reduce(.replaceItems(items), state: &state)
-        XCTAssertEqual(state.items, items)
+        let dummyItem = UIImage.dummy
+        reducer.reduce(.replaceItems(dummyItem), state: &state)
+        XCTAssertEqual(state.items.first!, dummyItem)
     }
     
     func testSearchButtonTapped_1Effect() {
-        let dummyItems: [URL] = [.dummy, .dummy]
+        let dummyItem: UIImage? = .dummy
         let dummyQuery = "Hi"
         let exp = XCTestExpectation(description: "Fire replaceItems action")
         
-        let subject = PassthroughSubject<[URL], Never>()
-        let searchClosure: (String) -> AnyPublisher<[URL], Never> = { query in
+        let subject = PassthroughSubject<UIImage?, Never>()
+        let searchClosure: (String) -> AnyPublisher<UIImage?, Never> = { query in
             XCTAssertEqual(query, dummyQuery)
-            return subject.eraseToAnyPublisher()
+            
+            return subject
+                .eraseToAnyPublisher()
         }
         
         let environment = SearchListViewStore.Environment(
@@ -58,17 +60,17 @@ class SearchViewStoreTest: XCTestCase {
         reducer.reduce(.searchButtonTapped, state: &state)?
             .sink { action in
                 exp.fulfill()
-                XCTAssertEqual(action, .replaceItems(dummyItems))
+                XCTAssertEqual(action, .replaceItems(dummyItem))
             }
             .store(in: &cancellables)
         
-        subject.send(dummyItems)
+        subject.send(dummyItem)
         wait(for: [exp], timeout: 0.1)
     }
 }
 
-private extension URL {
-    static var dummy: Self {
-        return URL(string: "Test")!
+private extension UIImage {
+    static var dummy: UIImage? {
+        return .init(systemName: "xmark")
     }
 }
