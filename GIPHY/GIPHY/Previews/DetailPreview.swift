@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+import Combine
 
 struct DetailPreview: View {
+    let subject: PassthroughSubject<DetailViewController.ViewState, Never> = .init()
     var body: some View {
         WrappedViewController(DetailViewController()) { viewController in
-            viewController.update(with: .dummy)
+            viewController.listenViewState(subject: subject)
+        }
+        .onAppear {
+            subject.send(.dummy)
         }
     }
 }

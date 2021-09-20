@@ -42,6 +42,7 @@ final class DetailViewController: UIViewController {
     // MARK: - Properties
     let actionDispatcher: PassthroughSubject<Action, Never>
     private let theme: Theme
+    private var cancellable: AnyCancellable?
     
     // MARK: - Lifecycle
     init(_ theme: Theme = .standard) {
@@ -61,7 +62,14 @@ final class DetailViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func update(with state: ViewState) {
+    func listenViewState(subject updateViewListener: PassthroughSubject<ViewState, Never>) {
+        cancellable = updateViewListener
+            .sink(receiveValue: { [weak self] viewState in
+                self?.update(with: viewState)
+            })
+    }
+    
+    private func update(with state: ViewState) {
         imageView.image = state.image
         favoritesButton.isSelected = state.isFavorites
     }

@@ -53,7 +53,7 @@ final class DetailViewStore {
     let updateViewSubject: PassthroughSubject<DetailViewController.ViewState, Never>
     @Published private var state: State
     private let environment: Environment
-    private var cancellabels: Set<AnyCancellable>
+    private var cancellables: Set<AnyCancellable>
     
     init(
         state: State,
@@ -62,8 +62,17 @@ final class DetailViewStore {
         self.state = state
         self.environment = environment
         updateViewSubject = .init()
-        cancellabels = []
+        cancellables = []
         listenState()
+    }
+    
+    func listenAction(subject actionListener: PassthroughSubject<DetailViewController.Action, Never>) {
+        actionListener
+            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .sink { action in
+                self.reducer.reduce(action, state: &self.state)
+            }
+            .store(in: &cancellables)
     }
     
     private func listenState() {
@@ -72,7 +81,7 @@ final class DetailViewStore {
             .sink { state in
                 self.updateViewSubject.send(DetailViewController.ViewState(with: state))
             }
-            .store(in: &cancellabels)
+            .store(in: &cancellables)
     }
 }
 

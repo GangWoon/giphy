@@ -30,6 +30,18 @@ final class SearchListViewStore {
             
             func presentDetailView(with image: UIImage?) {
                 let detailViewControler = DetailViewController()
+                let environment = DetailViewStore.Environment(
+                    image: image,
+                    isFavorites: { _ in return true },
+                    toggleFavorites: { _ in }
+                )
+                let store = DetailViewStore(
+                    state: .empty,
+                    environment: environment
+                )
+                store.listenAction(subject: detailViewControler.actionDispatcher)
+                detailViewControler.listenViewState(subject: store.updateViewSubject)
+                
                 viewController.show(detailViewControler, sender: viewController)
             }
         }
