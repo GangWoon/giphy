@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class DetailViewController: UIViewController {
     
@@ -26,6 +27,11 @@ final class DetailViewController: UIViewController {
         button.setImage(theme.favoritesButtonImage, for: .normal)
         button.setImage(theme.favoritesButtonSelectedImage, for: .selected)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(
+            self,
+            action: #selector(favoritesButtonTapped),
+            for: .touchUpInside
+        )
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(equalToConstant: 44)
         ])
@@ -34,11 +40,13 @@ final class DetailViewController: UIViewController {
     }()
     
     // MARK: - Properties
+    let actionDispatcher: PassthroughSubject<Action, Never>
     private let theme: Theme
     
     // MARK: - Lifecycle
     init(_ theme: Theme = .standard) {
         self.theme = theme
+        actionDispatcher = .init()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -48,6 +56,7 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        actionDispatcher.send(.viewDidLoad)
         build()
     }
     
@@ -72,8 +81,13 @@ final class DetailViewController: UIViewController {
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
         ])
     }
+    
+    @objc private func favoritesButtonTapped() {
+        actionDispatcher.send(.favoritesButtonTapped)
+    }
 }
 
+// MARK: - DetailViewController + Extension
 extension DetailViewController {
     struct Theme {
         static let standard = Self(
@@ -86,5 +100,10 @@ extension DetailViewController {
         let favoritesButtonBackgroundColor: UIColor
         let favoritesButtonImage: UIImage?
         let favoritesButtonSelectedImage: UIImage?
+    }
+    
+    enum Action: Equatable {
+        case viewDidLoad
+        case favoritesButtonTapped
     }
 }
