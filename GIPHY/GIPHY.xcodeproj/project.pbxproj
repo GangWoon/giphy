@@ -18,6 +18,7 @@
 		AE9CB30326F7A2AA00C4B15F /* SearchListPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CB30226F7A2AA00C4B15F /* SearchListPreview.swift */; };
 		AE9CB30526F7A2BA00C4B15F /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CB30426F7A2BA00C4B15F /* Helper.swift */; };
 		AE9CB30826F7A85000C4B15F /* GIPHYModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CB30726F7A85000C4B15F /* GIPHYModel.swift */; };
+		AEF3405226F8FD1300EEBF39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3405126F8FD1200EEBF39 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		AE9CB30226F7A2AA00C4B15F /* SearchListPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListPreview.swift; sourceTree = "<group>"; };
 		AE9CB30426F7A2BA00C4B15F /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		AE9CB30726F7A85000C4B15F /* GIPHYModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIPHYModel.swift; sourceTree = "<group>"; };
+		AEF3405126F8FD1200EEBF39 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 			children = (
 				AE9CB30126F7A28F00C4B15F /* Previews */,
 				AE6C0C8426F6CF3C00EF380D /* SearchListView */,
+				AEF3405026F8FCFA00EEBF39 /* DetailView */,
 				AE9CB30626F7A7D500C4B15F /* Network */,
 				AE6C0C5226F6AFD700EF380D /* AppDelegate.swift */,
 				AE9CB30426F7A2BA00C4B15F /* Helper.swift */,
@@ -133,6 +136,14 @@
 				AE9CB30726F7A85000C4B15F /* GIPHYModel.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		AEF3405026F8FCFA00EEBF39 /* DetailView */ = {
+			isa = PBXGroup;
+			children = (
+				AEF3405126F8FD1200EEBF39 /* DetailViewController.swift */,
+			);
+			path = DetailView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,6 +245,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEF3405226F8FD1300EEBF39 /* DetailViewController.swift in Sources */,
 				AE6C0C8B26F6E98B00EF380D /* NetworkManager.swift in Sources */,
 				AE9CB30526F7A2BA00C4B15F /* Helper.swift in Sources */,
 				AE6C0C8D26F70BCF00EF380D /* SearchListItem.swift in Sources */,
