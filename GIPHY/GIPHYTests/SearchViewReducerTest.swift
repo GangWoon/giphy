@@ -64,7 +64,7 @@ class SearchViewReducerTest: XCTestCase {
             }
         )
         let reducer = SearchListViewStore.Reducer(environment: environment)
-        var state = SearchListViewStore.State(query: "", items: [.init(key: key, data: dummyData)])
+        var state = SearchListViewStore.State(query: "", items: [.init(key: key, data: dummyData)], effects: [])
         reducer.reduce(.listItemTapped(.zero), state: &state)
         wait(for: [exp], timeout: 0.1)
     }
