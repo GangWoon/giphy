@@ -35,7 +35,7 @@ class DetailViewReducerTest: XCTestCase {
         }
         let environment = DetailViewStore.Environment(
             scheduler: .main,
-            isFavorites: { fatalError("should not be called") },
+            isFavorites: { fatalError("Should not be called") },
             toggleFavorites: toggleFavoritesClosure
         )
         let reducer = DetailViewStore.Reducer(environment: environment)

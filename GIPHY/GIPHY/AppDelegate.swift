@@ -10,9 +10,14 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
+    // MARK: - Properties
     var window: UIWindow?
-    private let documentFileManager: DocumentFileManager = .default
+    private let documentFileManager: DocumentFileManager = DocumentFileManager {
+        let urls = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask)
+        return urls[0]
+    }
     
+    // MARK: - App Lifecyle
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -30,29 +35,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         documentFileManager.updateDocuments()
     }
     
+    // MARK: - Methods
     private func buildInitialViewController() -> UIViewController {
         let searchListViewController = SearchListViewController()
-        let networkManager = NetworkManager(
-            urlSession: .shared,
-            decoder: JSONDecoder()
-        )
-        let scheduler = DispatchQueue.main
-        let container = SearchListViewStore.Navigator.Container(
-            scheduler: scheduler,
-            documentFileManager: documentFileManager
-        )
         let navigator = SearchListViewStore.Navigator(
             viewController: searchListViewController,
             container: container
         )
-        let environment = SearchListViewStore.Environment(
-            scheduler: scheduler,
-            presentDetailView: navigator.presentDetailView(id:metaData:),
-            search: networkManager.fetchItems
-        )
         let store = SearchListViewStore(
             state: .empty,
-            environment: environment
+            environment: makeEnvironment(presentDetailView: navigator.presentDetailView)
         )
         store.updateView = { [weak searchListViewController] items in
             searchListViewController?.update(with: items)
@@ -61,5 +53,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navigationController = UINavigationController(rootViewController: searchListViewController)
         
         return navigationController
+    }
+    
+    private func makeEnvironment(presentDetailView: @escaping (String, Data) -> Void) -> SearchListViewStore.Environment {
+        return SearchListViewStore.Environment(
+            scheduler: scheduler,
+            presentDetailView: presentDetailView,
+            search: networkManager.fetchItems
+        )
+    }
+}
+
+private extension AppDelegate {
+    var scheduler: DispatchQueue {
+        return .main
+    }
+    
+    var networkManager: NetworkManager {
+        return NetworkManager(
+            urlSession: .shared,
+            decoder: JSONDecoder()
+        )
+    }
+    
+    var container: SearchListViewStore.Navigator.Container {
+        return SearchListViewStore.Navigator.Container(
+            scheduler: scheduler,
+            documentFileManager: documentFileManager
+        )
     }
 }

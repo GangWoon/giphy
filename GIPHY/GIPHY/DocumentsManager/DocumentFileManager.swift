@@ -12,18 +12,24 @@ final class DocumentFileManager {
     
     // MARK: - Properties
     private var filePath: URL {
-        return manager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(DocumentFileManager.fileName)
+        return requsetedURL().appendingPathComponent(fileName)
     }
-    static let `default` = DocumentFileManager()
     private(set) var items: [String: Bool] = [String: Bool]()
-    private static let fileName: String = "favorites.json"
     private let manager: FileManager = .default
     private let decoder: JSONDecoder = JSONDecoder()
     private let encoder: JSONEncoder = JSONEncoder()
     
+    var fileName: String
+    var requsetedURL: () -> URL
+    
     // MARK: - Lifecycle
-    private init() { }
+    init(
+        requestedURL: @escaping () -> URL,
+        fileName: String = "favorites.json"
+    ) {
+        self.requsetedURL = requestedURL
+        self.fileName = fileName
+    }
     
     // MARK: - Methods
     func readDocuments() {
