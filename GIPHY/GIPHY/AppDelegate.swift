@@ -11,17 +11,23 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    private let documentFileManager: DocumentFileManager = .default
     
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         window = UIWindow()
+        documentFileManager.readDocuments()
         let navigationController = buildInitialViewController()
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        documentFileManager.updateDocuments()
     }
     
     private func buildInitialViewController() -> UIViewController {
@@ -31,17 +37,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             decoder: JSONDecoder()
         )
         let scheduler = DispatchQueue.main
-        let container = SearchListViewStore.Environment.Navigator.Container(
+        let container = SearchListViewStore.Navigator.Container(
             scheduler: scheduler,
-            documentFileManager: .standard
+            documentFileManager: documentFileManager
         )
-        let navigator = SearchListViewStore.Environment.Navigator(
+        let navigator = SearchListViewStore.Navigator(
             viewController: searchListViewController,
             container: container
         )
         let environment = SearchListViewStore.Environment(
             scheduler: scheduler,
-            navigator: navigator,
+            presentDetailView: navigator.presentDetailView(id:metaData:),
             search: networkManager.fetchItems
         )
         let store = SearchListViewStore(

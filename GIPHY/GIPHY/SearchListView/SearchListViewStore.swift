@@ -23,54 +23,51 @@ final class SearchListViewStore {
         var items: [Item]
     }
     
-    // MARK: - Environment
-    struct Environment {
+    struct Navigator {
         
-        struct Navigator {
-            
-            struct Container {
-                let scheduler: DispatchQueue
-                let documentFileManager: DocumentFileManager
-            }
-            
-            private let viewController: UIViewController
-            private let container: Container
-            
-            init(
-                viewController: UIViewController,
-                container: Container
-            ) {
-                self.viewController = viewController
-                self.container = container
-            }
-            
-            func presentDetailView(id: String, metaData: Data) {
-                let detailViewControler = DetailViewController()
-                let manager = container.documentFileManager
-                let state = DetailViewStore.State(image: UIImage(data: metaData))
-                let environment = DetailViewStore.Environment(scheduler: container.scheduler) { [weak manager] in
-                    return manager?.readFavorites(with: id) ?? false
-                } toggleFavorites: { [weak manager] in
-                    manager?.writeFavorites(with: id, value: $0)
-                    // TODO: - Move to another place
-                    manager?.writeForDocuments()
-                }
-                let store = DetailViewStore(state: state, environment: environment)
-                store.updateView = { [weak detailViewControler] state in
-                    let viewState = DetailViewController.ViewState(
-                        image: state.image,
-                        isFavorites: state.isFavorites
-                    )
-                    detailViewControler?.update(with: viewState)
-                }
-                detailViewControler.dispatch = store.dispatch
-                
-                viewController.show(detailViewControler, sender: viewController)
-            }
+        struct Container {
+            let scheduler: DispatchQueue
+            let documentFileManager: DocumentFileManager
         }
         
+        private let viewController: UIViewController
+        private let container: Container
+        
+        init(
+            viewController: UIViewController,
+            container: Container
+        ) {
+            self.viewController = viewController
+            self.container = container
+        }
+        
+        func presentDetailView(id: String, metaData: Data) {
+            let detailViewControler = DetailViewController()
+            let manager = container.documentFileManager
+            let state = DetailViewStore.State(image: UIImage(data: metaData))
+            let environment = DetailViewStore.Environment(scheduler: container.scheduler) { [weak manager] in
+                return manager?.readFavorites(id) ?? false
+            } toggleFavorites: { [weak manager] in
+                manager?.updateFavorites(id, value: $0)
+            }
+            let store = DetailViewStore(state: state, environment: environment)
+            store.updateView = { [weak detailViewControler] state in
+                let viewState = DetailViewController.ViewState(
+                    image: state.image,
+                    isFavorites: state.isFavorites
+                )
+                detailViewControler?.update(with: viewState)
+            }
+            detailViewControler.dispatch = store.dispatch
+            
+            viewController.show(detailViewControler, sender: viewController)
+        }
+    }
+    
+    // MARK: - Environment
+    struct Environment {
         let scheduler: DispatchQueue
-        let navigator: Navigator
+        let presentDetailView: (String, Data) -> Void
         let search: (String) -> AnyPublisher<(String, Data), Never>
     }
     
@@ -100,8 +97,7 @@ final class SearchListViewStore {
                 
             case let .listItemTapped(index):
                 let item = state.items[index]
-                environment.navigator
-                    .presentDetailView(id: item.key, metaData: item.data)
+                environment.presentDetailView(item.key, item.data)
                 
             case let .replaceItems(key, data):
                 state.items.append(State.Item(key: key, data: data))
@@ -138,16 +134,6 @@ final class SearchListViewStore {
                 self.fireEffectAndForget(effect)
             }
     }
-    
-//    func listenAction(subject actionListener: PassthroughSubject<SearchListViewController.Action, Never>) {
-//        actionListener
-//            .debounce(for: 0.3, scheduler: environment.scheduler)
-//            .sink { action in
-//                self.reducer.reduce(action, state: &self.state)
-//                    .map(self.fireEffectAndForget)
-//            }
-//            .store(in: &cancellables)
-//    }
     
     private func fireEffectAndForget(_ effect: AnyPublisher<SearchListViewController.Action, Never>) {
         var cancellable: AnyCancellable?

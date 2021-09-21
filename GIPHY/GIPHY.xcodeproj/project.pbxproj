@@ -99,8 +99,8 @@
 				AE6C0C8426F6CF3C00EF380D /* SearchListView */,
 				AEF3405026F8FCFA00EEBF39 /* DetailView */,
 				AE9CB30626F7A7D500C4B15F /* Network */,
+				AE81F7C026FA2F17003ACDFC /* DocumentsManager */,
 				AE6C0C5226F6AFD700EF380D /* AppDelegate.swift */,
-				AEF3405726F91EE800EEBF39 /* DocumentFileManager.swift */,
 				AE9CB30426F7A2BA00C4B15F /* Helper.swift */,
 				AE6C0C5B26F6AFD800EF380D /* Assets.xcassets */,
 				AE6C0C5D26F6AFD800EF380D /* LaunchScreen.storyboard */,
@@ -126,6 +126,14 @@
 				AE6C0C8C26F70BCF00EF380D /* SearchListItem.swift */,
 			);
 			path = SearchListView;
+			sourceTree = "<group>";
+		};
+		AE81F7C026FA2F17003ACDFC /* DocumentsManager */ = {
+			isa = PBXGroup;
+			children = (
+				AEF3405726F91EE800EEBF39 /* DocumentFileManager.swift */,
+			);
+			path = DocumentsManager;
 			sourceTree = "<group>";
 		};
 		AE9CB30126F7A28F00C4B15F /* Previews */ = {
