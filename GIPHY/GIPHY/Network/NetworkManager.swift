@@ -34,6 +34,7 @@ struct NetworkManager {
             .map(\.data)
             .decode(type: GIPHYData.self, decoder: decoder)
             .map(\.urls)
+            .replaceError(with: [])
             .flatMap { items in
                 return items.publisher
                     .flatMap { url in
