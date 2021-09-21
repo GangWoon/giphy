@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class SearchListViewController: UIViewController {
     
@@ -169,6 +170,7 @@ extension SearchListViewController {
         case searchButtonTapped
         case listItemTapped(Int)
         case replaceItems(key: String, data: Data)
+        case appendEffect(AnyCancellable?)
     }
     
     private enum Section: Hashable {

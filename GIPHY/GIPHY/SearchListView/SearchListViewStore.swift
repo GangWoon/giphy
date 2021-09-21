@@ -18,9 +18,14 @@ final class SearchListViewStore {
             var data: Data
         }
         
-        static var empty = Self(query: "", items: [])
+        static var empty = Self(
+            query: "",
+            items: [],
+            effects: []
+        )
         var query: String
         var items: [Item]
+        var effects: [AnyCancellable]
     }
     
     struct Navigator {
@@ -90,6 +95,11 @@ final class SearchListViewStore {
                 state.query = query
                 
             case .searchButtonTapped:
+                if !state.effects.isEmpty {
+                    state.effects
+                        .forEach{ $0.cancel() }
+                    state.effects = []
+                }
                 state.items = []
                 return environment.search(state.query)
                     .map { SearchListViewController.Action.replaceItems(key: $0.0, data: $0.1) }
@@ -101,6 +111,11 @@ final class SearchListViewStore {
                 
             case let .replaceItems(key, data):
                 state.items.append(State.Item(key: key, data: data))
+                
+            case let .appendEffect(effect):
+                if let effect = effect {
+                    state.effects.append(effect)
+                }
             }
             
             return nil
@@ -145,6 +160,7 @@ final class SearchListViewStore {
             }, receiveValue: { action in
                 self.reducer.reduce(action, state: &self.state)
             })
+        reducer.reduce(.appendEffect(cancellable), state: &state)
         cancellable?
             .store(in: &cancellables)
     }
