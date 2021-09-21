@@ -10,7 +10,7 @@
 		AE6C0C5326F6AFD700EF380D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C5226F6AFD700EF380D /* AppDelegate.swift */; };
 		AE6C0C5C26F6AFD800EF380D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE6C0C5B26F6AFD800EF380D /* Assets.xcassets */; };
 		AE6C0C5F26F6AFD800EF380D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE6C0C5D26F6AFD800EF380D /* LaunchScreen.storyboard */; };
-		AE6C0C6A26F6AFD800EF380D /* SearchViewStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C6926F6AFD800EF380D /* SearchViewStoreTest.swift */; };
+		AE6C0C6A26F6AFD800EF380D /* SearchViewReducerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C6926F6AFD800EF380D /* SearchViewReducerTest.swift */; };
 		AE6C0C8326F6C89700EF380D /* SearchListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C8226F6C89700EF380D /* SearchListViewController.swift */; };
 		AE6C0C8626F6CF5D00EF380D /* SearchListViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C8526F6CF5D00EF380D /* SearchListViewStore.swift */; };
 		AE6C0C8B26F6E98B00EF380D /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C8A26F6E98B00EF380D /* NetworkManager.swift */; };
@@ -41,7 +41,7 @@
 		AE6C0C5E26F6AFD800EF380D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE6C0C6026F6AFD800EF380D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE6C0C6526F6AFD800EF380D /* GIPHYTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GIPHYTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE6C0C6926F6AFD800EF380D /* SearchViewStoreTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewStoreTest.swift; sourceTree = "<group>"; };
+		AE6C0C6926F6AFD800EF380D /* SearchViewReducerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewReducerTest.swift; sourceTree = "<group>"; };
 		AE6C0C6B26F6AFD800EF380D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE6C0C8226F6C89700EF380D /* SearchListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewController.swift; sourceTree = "<group>"; };
 		AE6C0C8526F6CF5D00EF380D /* SearchListViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewStore.swift; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 		AE6C0C6826F6AFD800EF380D /* GIPHYTests */ = {
 			isa = PBXGroup;
 			children = (
-				AE6C0C6926F6AFD800EF380D /* SearchViewStoreTest.swift */,
+				AE6C0C6926F6AFD800EF380D /* SearchViewReducerTest.swift */,
 				AE6C0C6B26F6AFD800EF380D /* Info.plist */,
 			);
 			path = GIPHYTests;
@@ -281,7 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE6C0C6A26F6AFD800EF380D /* SearchViewStoreTest.swift in Sources */,
+				AE6C0C6A26F6AFD800EF380D /* SearchViewReducerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
