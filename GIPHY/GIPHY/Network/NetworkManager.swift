@@ -66,7 +66,7 @@ extension NetworkManager {
         case limit
         
         private var privateKey: String {
-            return "TAe8SiGc5beuLWNZP2BmhAyoCPzNhewX"
+            return ""
         }
         private var fetchCount: String {
             return "16"
