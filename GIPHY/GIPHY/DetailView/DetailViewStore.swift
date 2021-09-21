@@ -10,18 +10,21 @@ import Combine
 
 final class DetailViewStore {
     
+    // MARK: - State
     struct State: Equatable {
         static var empty = Self(image: nil, isFavorites: false)
         var image: UIImage?
-        var isFavorites: Bool
+        var isFavorites: Bool = false
     }
     
+    // MARK: - Environment
     struct Environment {
-        let image: UIImage?
+        let scheduler: DispatchQueue
         let isFavorites: () -> Bool
         let toggleFavorites: (Bool) -> Void
     }
     
+    // MARK: - Reducer
     struct Reducer {
         
         private let environment: Environment
@@ -36,7 +39,6 @@ final class DetailViewStore {
         ) {
             switch action {
             case .viewDidLoad:
-                state.image = environment.image
                 state.isFavorites = environment.isFavorites()
                 
             case .favoritesButtonTapped:
@@ -46,39 +48,36 @@ final class DetailViewStore {
         }
     }
     
+    // MARK: - Properties
     private var reducer: Reducer {
         return Reducer(environment: environment)
     }
-    let updateViewSubject: PassthroughSubject<DetailViewController.ViewState, Never>
+    var updateView: ((DetailViewController.ViewState) -> Void)?
     @Published private var state: State
     private let environment: Environment
     private var cancellables: Set<AnyCancellable>
     
+    // MARK: - Lifecycle
     init(
         state: State,
         environment: Environment
     ) {
         self.state = state
         self.environment = environment
-        updateViewSubject = .init()
         cancellables = []
         listenState()
     }
     
-    func listenAction(subject actionListener: PassthroughSubject<DetailViewController.Action, Never>) {
-        actionListener
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
-            .sink { action in
-                self.reducer.reduce(action, state: &self.state)
-            }
-            .store(in: &cancellables)
+    // MARK: - Methods
+    func dispatch(_ action: DetailViewController.Action) {
+        reducer.reduce(action, state: &state)
     }
     
     private func listenState() {
         $state
-            .removeDuplicates()
-            .sink { state in
-                self.updateViewSubject.send(DetailViewController.ViewState(with: state))
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.updateView?(.init(with: state))
             }
             .store(in: &cancellables)
     }

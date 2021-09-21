@@ -30,9 +30,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             urlSession: .shared,
             decoder: JSONDecoder()
         )
-        let navigator = SearchListViewStore.Environment.Navigator(viewController: searchListViewController)
+        let scheduler = DispatchQueue.main
+        let container = SearchListViewStore.Environment.Navigator.Container(
+            scheduler: scheduler,
+            documentFileManager: .standard
+        )
+        let navigator = SearchListViewStore.Environment.Navigator(
+            viewController: searchListViewController,
+            container: container
+        )
         let environment = SearchListViewStore.Environment(
-            scheduler: .main,
+            scheduler: scheduler,
             navigator: navigator,
             search: networkManager.fetchItems
         )
@@ -40,8 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             state: .empty,
             environment: environment
         )
-        store.listenAction(subject: searchListViewController.actionDispatcher)
-        searchListViewController.listenViewState(subject: store.updateViewSubject)
+        store.updateView = { [weak searchListViewController] items in
+            searchListViewController?.update(with: items)
+        }
+        searchListViewController.dispatch = store.dispatch
         let navigationController = UINavigationController(rootViewController: searchListViewController)
         
         return navigationController

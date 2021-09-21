@@ -17,6 +17,7 @@ final class SearchListViewStore {
             var key: String
             var data: Data
         }
+        
         static var empty = Self(query: "", items: [])
         var query: String
         var items: [Item]
@@ -27,28 +28,42 @@ final class SearchListViewStore {
         
         struct Navigator {
             
-            private let viewController: UIViewController
+            struct Container {
+                let scheduler: DispatchQueue
+                let documentFileManager: DocumentFileManager
+            }
             
-            init(viewController: UIViewController) {
+            private let viewController: UIViewController
+            private let container: Container
+            
+            init(
+                viewController: UIViewController,
+                container: Container
+            ) {
                 self.viewController = viewController
+                self.container = container
             }
             
             func presentDetailView(id: String, metaData: Data) {
                 let detailViewControler = DetailViewController()
-                let manager = DocumentFileManager.standard
-                let env = DetailViewStore.Environment(
-                    image: UIImage(data: metaData)
-                ) { 
-                        manager.readFavorites(with: id)
-                    } toggleFavorites: { fact in
-                        manager.writeFavorites(with: id, value: fact)
-                        manager.writeForDocuments()
-                    }
-                
-                let store = DetailViewStore(state: .empty, environment: env)
-                
-                store.listenAction(subject: detailViewControler.actionDispatcher)
-                detailViewControler.listenViewState(subject: store.updateViewSubject)
+                let manager = container.documentFileManager
+                let state = DetailViewStore.State(image: UIImage(data: metaData))
+                let environment = DetailViewStore.Environment(scheduler: container.scheduler) { [weak manager] in
+                    return manager?.readFavorites(with: id) ?? false
+                } toggleFavorites: { [weak manager] in
+                    manager?.writeFavorites(with: id, value: $0)
+                    // TODO: - Move to another place
+                    manager?.writeForDocuments()
+                }
+                let store = DetailViewStore(state: state, environment: environment)
+                store.updateView = { [weak detailViewControler] state in
+                    let viewState = DetailViewController.ViewState(
+                        image: state.image,
+                        isFavorites: state.isFavorites
+                    )
+                    detailViewControler?.update(with: viewState)
+                }
+                detailViewControler.dispatch = store.dispatch
                 
                 viewController.show(detailViewControler, sender: viewController)
             }
@@ -100,7 +115,7 @@ final class SearchListViewStore {
     private var reducer: Reducer {
         Reducer(environment: environment)
     }
-    let updateViewSubject: PassthroughSubject<[Data], Never>
+    var updateView: (([Data]) -> Void)?
     @Published private var state: State
     private let environment: Environment
     private var cancellables: Set<AnyCancellable>
@@ -112,21 +127,27 @@ final class SearchListViewStore {
     ) {
         self.state = state
         self.environment = environment
-        updateViewSubject = .init()
         cancellables = []
         listenState()
     }
     
     // MARK: - Methods
-    func listenAction(subject actionListener: PassthroughSubject<SearchListViewController.Action, Never>) {
-        actionListener
-            .debounce(for: 0.3, scheduler: environment.scheduler)
-            .sink { action in
-                self.reducer.reduce(action, state: &self.state)
-                    .map(self.fireEffectAndForget)
+    func dispatch(_ action: SearchListViewController.Action) {
+        reducer.reduce(action, state: &state)
+            .map { effect in
+                self.fireEffectAndForget(effect)
             }
-            .store(in: &cancellables)
     }
+    
+//    func listenAction(subject actionListener: PassthroughSubject<SearchListViewController.Action, Never>) {
+//        actionListener
+//            .debounce(for: 0.3, scheduler: environment.scheduler)
+//            .sink { action in
+//                self.reducer.reduce(action, state: &self.state)
+//                    .map(self.fireEffectAndForget)
+//            }
+//            .store(in: &cancellables)
+//    }
     
     private func fireEffectAndForget(_ effect: AnyPublisher<SearchListViewController.Action, Never>) {
         var cancellable: AnyCancellable?
@@ -147,7 +168,7 @@ final class SearchListViewStore {
             .removeDuplicates()
             .receive(on: environment.scheduler)
             .sink { state in
-                self.updateViewSubject.send(state.items.map(\.data))
+                self.updateView?(state.items.map(\.data))
             }
             .store(in: &cancellables)
     }

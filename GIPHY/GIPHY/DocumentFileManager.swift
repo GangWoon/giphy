@@ -21,22 +21,13 @@ class DocumentFileManager {
     }
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
-    var items: Set<StoredItem> = [] {
-        didSet {
-            print("Set ____________")
-            print(items)
-            print("____________")
-        }
-    }
+    var items: Set<StoredItem> = []
     static let standard = DocumentFileManager(manager: .default)
     
     init(manager: FileManager) {
         self.manager = manager
         self.decoder = .init()
         self.encoder = .init()
-
-        print("🧩 path: ",manager.urls(for: .documentDirectory, in: .userDomainMask)[0].absoluteString)
-        
         readFromDocuments()
     }
     

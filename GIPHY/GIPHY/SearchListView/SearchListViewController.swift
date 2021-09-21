@@ -6,21 +6,18 @@
 //
 
 import UIKit
-import Combine
 
 final class SearchListViewController: UIViewController {
     
     // MARK: - Properties
-    let actionDispatcher: PassthroughSubject<Action, Never>
+    var dispatch: ((Action) -> Void)?
     private let theme: Theme
     private let listViewLineSpacing: CGFloat = 8
     private var dataSource: UICollectionViewDiffableDataSource<Section, Data>?
-    private var cancellable: AnyCancellable?
     
     // MARK: - Lifecycle
     init(_ theme: Theme = .standard) {
         self.theme = theme
-        actionDispatcher = .init()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,14 +31,7 @@ final class SearchListViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func listenViewState(subject updateViewListener: PassthroughSubject<[Data], Never>) {
-        cancellable = updateViewListener
-            .sink { [weak self] in
-                self?.update(with: $0)
-            }
-    }
-    
-    private func update(with state: [Data]) {
+    func update(with state: [Data]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Data>()
         snapshot.appendSections([.main])
         snapshot.appendItems(state)
@@ -150,11 +140,11 @@ final class SearchListViewController: UIViewController {
     }
     
     @objc private func searchButtonTapped() {
-        actionDispatcher.send(.searchButtonTapped)
+        dispatch?(.searchButtonTapped)
     }
     
     @objc private func searchBarChanged(_ sender: UITextField) {
-        actionDispatcher.send(.searchBarChanged(sender.text ?? ""))
+        dispatch?(.searchBarChanged(sender.text ?? ""))
     }
 }
 
@@ -192,7 +182,7 @@ extension SearchListViewController: UICollectionViewDelegate {
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
-        actionDispatcher.send(.listItemTapped(indexPath.item))
+        dispatch?(.listItemTapped(indexPath.item))
     }
 }
 

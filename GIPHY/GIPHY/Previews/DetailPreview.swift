@@ -12,7 +12,7 @@ struct DetailPreview: View {
     let subject: PassthroughSubject<DetailViewController.ViewState, Never> = .init()
     var body: some View {
         WrappedViewController(DetailViewController()) { viewController in
-            viewController.listenViewState(subject: subject)
+//            viewController.listenViewState(subject: subject)
         }
         .onAppear {
             subject.send(.dummy)

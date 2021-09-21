@@ -40,14 +40,12 @@ final class DetailViewController: UIViewController {
     }()
     
     // MARK: - Properties
-    let actionDispatcher: PassthroughSubject<Action, Never>
+    var dispatch: ((Action) -> Void)?
     private let theme: Theme
-    private var cancellable: AnyCancellable?
     
     // MARK: - Lifecycle
     init(_ theme: Theme = .standard) {
         self.theme = theme
-        actionDispatcher = .init()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -57,19 +55,12 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        actionDispatcher.send(.viewDidLoad)
+        dispatch?(.viewDidLoad)
         build()
     }
     
     // MARK: - Methods
-    func listenViewState(subject updateViewListener: PassthroughSubject<ViewState, Never>) {
-        cancellable = updateViewListener
-            .sink(receiveValue: { [weak self] viewState in
-                self?.update(with: viewState)
-            })
-    }
-    
-    private func update(with state: ViewState) {
+    func update(with state: ViewState) {
         imageView.image = state.image
         favoritesButton.isSelected = state.isFavorites
     }
@@ -92,7 +83,7 @@ final class DetailViewController: UIViewController {
     }
     
     @objc private func favoritesButtonTapped() {
-        actionDispatcher.send(.favoritesButtonTapped)
+        dispatch?(.favoritesButtonTapped)
     }
 }
 
