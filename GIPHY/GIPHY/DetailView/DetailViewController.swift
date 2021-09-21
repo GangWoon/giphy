@@ -55,7 +55,7 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        dispatch?(.viewDidLoad)
+        dispatch?(.initialData)
         build()
     }
     
@@ -103,7 +103,7 @@ extension DetailViewController {
     }
     
     enum Action: Equatable {
-        case viewDidLoad
+        case initialData
         case favoritesButtonTapped
     }
     

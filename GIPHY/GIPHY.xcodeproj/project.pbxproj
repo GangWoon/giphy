@@ -15,6 +15,7 @@
 		AE6C0C8626F6CF5D00EF380D /* SearchListViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C8526F6CF5D00EF380D /* SearchListViewStore.swift */; };
 		AE6C0C8B26F6E98B00EF380D /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C8A26F6E98B00EF380D /* NetworkManager.swift */; };
 		AE6C0C8D26F70BCF00EF380D /* SearchListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C0C8C26F70BCF00EF380D /* SearchListItem.swift */; };
+		AE81F7C226FA3761003ACDFC /* DetailViewReducerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE81F7C126FA3761003ACDFC /* DetailViewReducerTest.swift */; };
 		AE9CB30326F7A2AA00C4B15F /* SearchListPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CB30226F7A2AA00C4B15F /* SearchListPreview.swift */; };
 		AE9CB30526F7A2BA00C4B15F /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CB30426F7A2BA00C4B15F /* Helper.swift */; };
 		AE9CB30826F7A85000C4B15F /* GIPHYModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CB30726F7A85000C4B15F /* GIPHYModel.swift */; };
@@ -47,6 +48,7 @@
 		AE6C0C8526F6CF5D00EF380D /* SearchListViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewStore.swift; sourceTree = "<group>"; };
 		AE6C0C8A26F6E98B00EF380D /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		AE6C0C8C26F70BCF00EF380D /* SearchListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListItem.swift; sourceTree = "<group>"; };
+		AE81F7C126FA3761003ACDFC /* DetailViewReducerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewReducerTest.swift; sourceTree = "<group>"; };
 		AE9CB30226F7A2AA00C4B15F /* SearchListPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListPreview.swift; sourceTree = "<group>"; };
 		AE9CB30426F7A2BA00C4B15F /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		AE9CB30726F7A85000C4B15F /* GIPHYModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIPHYModel.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				AE6C0C6926F6AFD800EF380D /* SearchViewReducerTest.swift */,
+				AE81F7C126FA3761003ACDFC /* DetailViewReducerTest.swift */,
 				AE6C0C6B26F6AFD800EF380D /* Info.plist */,
 			);
 			path = GIPHYTests;
@@ -281,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE81F7C226FA3761003ACDFC /* DetailViewReducerTest.swift in Sources */,
 				AE6C0C6A26F6AFD800EF380D /* SearchViewReducerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

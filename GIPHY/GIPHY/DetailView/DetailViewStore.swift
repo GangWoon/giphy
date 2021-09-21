@@ -38,7 +38,7 @@ final class DetailViewStore {
             state: inout State
         ) {
             switch action {
-            case .viewDidLoad:
+            case .initialData:
                 state.isFavorites = environment.isFavorites()
                 
             case .favoritesButtonTapped:
