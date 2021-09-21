@@ -21,6 +21,7 @@
 		AEF3405226F8FD1300EEBF39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3405126F8FD1200EEBF39 /* DetailViewController.swift */; };
 		AEF3405426F8FD3F00EEBF39 /* DetailPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3405326F8FD3F00EEBF39 /* DetailPreview.swift */; };
 		AEF3405626F9161400EEBF39 /* DetailViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3405526F9161400EEBF39 /* DetailViewStore.swift */; };
+		AEF3405826F91EE800EEBF39 /* DocumentFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF3405726F91EE800EEBF39 /* DocumentFileManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		AEF3405126F8FD1200EEBF39 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		AEF3405326F8FD3F00EEBF39 /* DetailPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPreview.swift; sourceTree = "<group>"; };
 		AEF3405526F9161400EEBF39 /* DetailViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewStore.swift; sourceTree = "<group>"; };
+		AEF3405726F91EE800EEBF39 /* DocumentFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentFileManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				AEF3405026F8FCFA00EEBF39 /* DetailView */,
 				AE9CB30626F7A7D500C4B15F /* Network */,
 				AE6C0C5226F6AFD700EF380D /* AppDelegate.swift */,
+				AEF3405726F91EE800EEBF39 /* DocumentFileManager.swift */,
 				AE9CB30426F7A2BA00C4B15F /* Helper.swift */,
 				AE6C0C5B26F6AFD800EF380D /* Assets.xcassets */,
 				AE6C0C5D26F6AFD800EF380D /* LaunchScreen.storyboard */,
@@ -258,6 +261,7 @@
 				AE9CB30326F7A2AA00C4B15F /* SearchListPreview.swift in Sources */,
 				AEF3405426F8FD3F00EEBF39 /* DetailPreview.swift in Sources */,
 				AE6C0C8326F6C89700EF380D /* SearchListViewController.swift in Sources */,
+				AEF3405826F91EE800EEBF39 /* DocumentFileManager.swift in Sources */,
 				AE9CB30826F7A85000C4B15F /* GIPHYModel.swift in Sources */,
 				AE6C0C5326F6AFD700EF380D /* AppDelegate.swift in Sources */,
 				AE6C0C8626F6CF5D00EF380D /* SearchListViewStore.swift in Sources */,

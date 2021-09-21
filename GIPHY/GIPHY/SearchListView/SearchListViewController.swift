@@ -14,7 +14,7 @@ final class SearchListViewController: UIViewController {
     let actionDispatcher: PassthroughSubject<Action, Never>
     private let theme: Theme
     private let listViewLineSpacing: CGFloat = 8
-    private var dataSource: UICollectionViewDiffableDataSource<Section, UIImage?>?
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Data>?
     private var cancellable: AnyCancellable?
     
     // MARK: - Lifecycle
@@ -34,15 +34,15 @@ final class SearchListViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func listenViewState(subject updateViewListener: PassthroughSubject<[UIImage?], Never>) {
+    func listenViewState(subject updateViewListener: PassthroughSubject<[Data], Never>) {
         cancellable = updateViewListener
             .sink { [weak self] in
                 self?.update(with: $0)
             }
     }
     
-    private func update(with state: [UIImage?]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, UIImage?>()
+    private func update(with state: [Data]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Data>()
         snapshot.appendSections([.main])
         snapshot.appendItems(state)
         dataSource?.apply(snapshot)
@@ -137,7 +137,8 @@ final class SearchListViewController: UIViewController {
                     withReuseIdentifier: SearchListRow.identifier,
                     for: indexPath
                 ) as? SearchListRow
-                cell?.update(with: image)
+                
+                cell?.update(with: UIImage(data: image))
                 
                 return cell
             }
@@ -177,7 +178,7 @@ extension SearchListViewController {
         case searchBarChanged(String)
         case searchButtonTapped
         case listItemTapped(Int)
-        case replaceItems(UIImage?)
+        case replaceItems(key: String, data: Data)
     }
     
     private enum Section: Hashable {

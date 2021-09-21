@@ -24,9 +24,9 @@ struct NetworkManager {
     }
     
     // MARK: - Methods
-    func fetchItems(query: String) -> AnyPublisher<UIImage?, Never> {
+    func fetchItems(query: String) -> AnyPublisher<(String, Data), Never> {
         guard let url = makeURL(query) else {
-            return Just(nil)
+            return Just(("", Data()))
                 .eraseToAnyPublisher()
         }
         
@@ -38,12 +38,11 @@ struct NetworkManager {
                 return items.publisher
                     .flatMap { url in
                         return urlSession.dataTaskPublisher(for: url)
-                            .map(\.data)
-                            .map(UIImage.init(data:))
-                            .replaceError(with: nil)
+                            .map { (url.absoluteString, $0.data) }
+                            .replaceError(with: ("", Data()))
                     }
             }
-            .replaceError(with: nil)
+            .replaceError(with: ("", Data()))
             .eraseToAnyPublisher()
     }
     

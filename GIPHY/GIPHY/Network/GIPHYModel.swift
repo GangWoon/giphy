@@ -18,12 +18,9 @@ struct GIPHYData: Decodable {
 
 struct GIPHYItem: Decodable {
     
-    let id: String
-    let title: String
     let image: GIPHYImage
     
     enum CodingKeys: String, CodingKey {
-        case id, title
         case image = "images"
     }
 }

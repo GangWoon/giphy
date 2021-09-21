@@ -11,15 +11,14 @@ import Combine
 final class DetailViewStore {
     
     struct State: Equatable {
-        static var empty = Self(id: "", image: nil, isFavorites: false)
-        var id: String
+        static var empty = Self(image: nil, isFavorites: false)
         var image: UIImage?
         var isFavorites: Bool
     }
     
     struct Environment {
         let image: UIImage?
-        let isFavorites: (String) -> Bool
+        let isFavorites: () -> Bool
         let toggleFavorites: (Bool) -> Void
     }
     
@@ -38,7 +37,7 @@ final class DetailViewStore {
             switch action {
             case .viewDidLoad:
                 state.image = environment.image
-                state.isFavorites = environment.isFavorites(state.id)
+                state.isFavorites = environment.isFavorites()
                 
             case .favoritesButtonTapped:
                 state.isFavorites.toggle()

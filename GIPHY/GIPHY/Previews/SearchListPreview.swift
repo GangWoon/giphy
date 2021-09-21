@@ -14,7 +14,7 @@ struct SearchListPreview: View {
     
     var body: some View {
         WrappedViewController(SearchListViewController()) { viewController in
-            viewController.listenViewState(subject: subject)
+//            viewController.listenViewState(subject: subject)
         }
         .onAppear {
             subject.send(items)

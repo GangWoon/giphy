@@ -12,9 +12,14 @@ final class SearchListViewStore {
     
     // MARK: - State
     struct State: Equatable {
+        
+        struct Item: Equatable {
+            var key: String
+            var data: Data
+        }
         static var empty = Self(query: "", items: [])
         var query: String
-        var items: [UIImage?]
+        var items: [Item]
     }
     
     // MARK: - Environment
@@ -28,17 +33,20 @@ final class SearchListViewStore {
                 self.viewController = viewController
             }
             
-            func presentDetailView(with image: UIImage?) {
+            func presentDetailView(id: String, metaData: Data) {
                 let detailViewControler = DetailViewController()
-                let environment = DetailViewStore.Environment(
-                    image: image,
-                    isFavorites: { _ in return true },
-                    toggleFavorites: { _ in }
-                )
-                let store = DetailViewStore(
-                    state: .empty,
-                    environment: environment
-                )
+                let manager = DocumentFileManager.standard
+                let env = DetailViewStore.Environment(
+                    image: UIImage(data: metaData)
+                ) { 
+                        manager.readFavorites(with: id)
+                    } toggleFavorites: { fact in
+                        manager.writeFavorites(with: id, value: fact)
+                        manager.writeForDocuments()
+                    }
+                
+                let store = DetailViewStore(state: .empty, environment: env)
+                
                 store.listenAction(subject: detailViewControler.actionDispatcher)
                 detailViewControler.listenViewState(subject: store.updateViewSubject)
                 
@@ -48,7 +56,7 @@ final class SearchListViewStore {
         
         let scheduler: DispatchQueue
         let navigator: Navigator
-        let search: (String) -> AnyPublisher<UIImage?, Never>
+        let search: (String) -> AnyPublisher<(String, Data), Never>
     }
     
     // MARK: - Reducer
@@ -72,15 +80,16 @@ final class SearchListViewStore {
             case .searchButtonTapped:
                 state.items = []
                 return environment.search(state.query)
-                    .map { SearchListViewController.Action.replaceItems($0) }
+                    .map { SearchListViewController.Action.replaceItems(key: $0.0, data: $0.1) }
                     .eraseToAnyPublisher()
                 
             case let .listItemTapped(index):
+                let item = state.items[index]
                 environment.navigator
-                    .presentDetailView(with: state.items[index])
+                    .presentDetailView(id: item.key, metaData: item.data)
                 
-            case let .replaceItems(items):
-                state.items.append(items)
+            case let .replaceItems(key, data):
+                state.items.append(State.Item(key: key, data: data))
             }
             
             return nil
@@ -91,7 +100,7 @@ final class SearchListViewStore {
     private var reducer: Reducer {
         Reducer(environment: environment)
     }
-    let updateViewSubject: PassthroughSubject<[UIImage?], Never>
+    let updateViewSubject: PassthroughSubject<[Data], Never>
     @Published private var state: State
     private let environment: Environment
     private var cancellables: Set<AnyCancellable>
@@ -138,7 +147,7 @@ final class SearchListViewStore {
             .removeDuplicates()
             .receive(on: environment.scheduler)
             .sink { state in
-                self.updateViewSubject.send(state.items)
+                self.updateViewSubject.send(state.items.map(\.data))
             }
             .store(in: &cancellables)
     }
