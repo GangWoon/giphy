@@ -14,10 +14,7 @@ struct SearchListPreview: View {
     
     var body: some View {
         WrappedViewController(SearchListViewController()) { viewController in
-//            viewController.listenViewState(subject: subject)
-        }
-        .onAppear {
-            subject.send(items)
+            viewController.update(with: items)
         }
     }
 }
@@ -29,16 +26,16 @@ struct SearchListPreview_Previews: PreviewProvider {
 }
 
 private extension SearchListPreview {
-    var items: [UIImage?] {
+    var items: [Data] {
         return [
-            .init(systemName: "xmark"),
-            .init(systemName: "circle"),
-            .init(systemName: "pencil"),
-            .init(systemName: "scribble"),
-            .init(systemName: "pencil.tip"),
-            .init(systemName: "trash"),
-            .init(systemName: "folder.fill"),
-            .init(systemName: "paperplane.fill")
+            (UIImage(systemName: "xmark")?.pngData())!,
+            (UIImage(systemName: "circle")?.pngData())!,
+            (UIImage(systemName: "pencil")?.pngData())!,
+            (UIImage(systemName: "scribble")?.pngData())!,
+            (UIImage(systemName: "pencil.tip")?.pngData())!,
+            (UIImage(systemName: "trash")?.pngData())!,
+            (UIImage(systemName: "folder.fill")?.pngData())!,
+            (UIImage(systemName: "paperplane.fill")?.pngData())!
         ]
     }
 }
