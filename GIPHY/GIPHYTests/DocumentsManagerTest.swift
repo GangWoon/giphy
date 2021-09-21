@@ -14,7 +14,7 @@ class DocumentsManagerTest: XCTestCase {
         let fileName = "Test"
         let manager = DocumentFileManager(
             requestedURL: {
-                FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+                FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask)[0]
             },
             fileName: fileName
         )
@@ -45,6 +45,7 @@ class DocumentsManagerTest: XCTestCase {
             fileName: ""
         )
         manager.updateFavorites("Hi", value: true)
+        wait(for: [], timeout: 3)
         XCTAssertEqual(manager.items["Hi"], true)
     }
 }
